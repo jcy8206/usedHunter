@@ -40,6 +40,6 @@ public class RegisterController {
 
 private boolean isValid(User user) {
 	// TODO Auto-generated method stub
-	return true;
+	return false;
 }
 }

@@ -81,7 +81,7 @@
     <label for="">이름</label>
     <input class="input-field" type="text" name="name" placeholder="홍길동">
     <label for="">이메일</label>
-    <input class="input-field" type="text" name="email" placeholder="example@fastcampus.co.kr"> 
+    <input class="input-field" type="text" name="email" placeholder="jcy8206@google.com"> 
     <label for="">생일</label>
     <input class="input-field" type="text" name="birth" placeholder="2020/12/31">
     <div class="sns-chk">
