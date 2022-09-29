@@ -4,8 +4,8 @@ import java.sql.*;
 
 public class DBConnectionTest {
     public static void main(String[] args) throws Exception {
-        // 스키마의 이름(springbasic)이 다른 경우 알맞게 변경해야 함
-        String DB_URL = "jdbc:mysql://localhost:3301/springbasic?useUnicode=true&characterEncoding=utf8";
+        // 스키마의 이름(usedhunter)이 다른 경우 알맞게 변경해야 함
+        String DB_URL = "jdbc:mysql://localhost:3301/usedhunter?useUnicode=true&characterEncoding=utf8";
 
         // DB의 userid와 pwd를 알맞게 변경해야 함
         String DB_USER = "jcy";
@@ -22,9 +22,5 @@ public class DBConnectionTest {
             String curDate = rs.getString(1);  // 읽어온 행의 첫번째 컬럼의 값을 String으로 읽어서 curDate에 저장
             System.out.println(curDate);       // 2022-01-11 13:53:00.0
         }
-    } // main()
+    } 
 }
-
-/* [실행결과]
-2022-01-11 13:53:00.0
-*/

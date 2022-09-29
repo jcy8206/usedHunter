@@ -1,7 +1,8 @@
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.net.URLDecoder" %>
-<%@ page session="false" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+
+<%@ page import="java.net.URLDecoder"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,6 +35,7 @@
             padding: 0 10px;
             margin-bottom: 10px;
         }
+        
         label {
             width:300px;
             height:30px;
@@ -63,6 +65,7 @@
             color:red;
             margin-bottom: 20px;
         }
+        
         .sns-chk {
             margin-top : 5px; 
         }
@@ -70,30 +73,30 @@
     <title>Register</title>
 </head>
 <body>
-   <form action="<c:url value="/register/save"/>" method="POST" onsubmit="return formCheck(this)">
+   <!-- form action="<c:url value="/register/save"/>" method="POST" onsubmit="return formCheck(this)"-->
+   <form:form modelAttribute="user">
     <div class="title">Register</div>
-    <!-- <div id="msg" class="msg">${param.msg}</div>  -->
-    <div id="msg" class="msg">${URLDecoder.decode(param.msg)}</div>
+    <div id="msg" class="msg"><form:errors path="id"/></div>  
     <label for="">아이디</label>
-    <input class="input-field" type="text" name="id" placeholder="8~12자리의 영대소문자와 숫자 조합" autofocus>
+    <input class="input-field" type="text" name="id" placeholder="8~12자리의 영대소문자와 숫자 조합">
     <label for="">비밀번호</label>
     <input class="input-field" type="text" name="pwd" placeholder="8~12자리의 영대소문자와 숫자 조합">
     <label for="">이름</label>
     <input class="input-field" type="text" name="name" placeholder="홍길동">
     <label for="">이메일</label>
-    <input class="input-field" type="text" name="email" placeholder="jcy8206@google.com"> 
+    <input class="input-field" type="text" name="email" placeholder="example@aaa.co.kr"> 
     <label for="">생일</label>
-    <input class="input-field" type="text" name="birth" placeholder="2020/12/31">
+    <input class="input-field" type="text" name="birth" placeholder="2020-12-31">
     <div class="sns-chk">
         <label><input type="checkbox" name="sns" value="facebook"/>페이스북</label>
         <label><input type="checkbox" name="sns" value="kakaotalk"/>카카오톡</label>
         <label><input type="checkbox" name="sns" value="instagram"/>인스타그램</label>
     </div>
     <button>회원 가입</button>
-   </form> 
+   </form:form> 
    <script>
        function formCheck(frm) {
-            var msg ='';
+            let msg ='';
 
             if(frm.id.value.length<3) {
                 setMessage('id의 길이는 3이상이어야 합니다.', frm.id);

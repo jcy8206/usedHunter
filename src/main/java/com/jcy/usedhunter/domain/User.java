@@ -23,20 +23,24 @@ public class User {
         this.reg_date = reg_date;
     }
 
+   
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id) && Objects.equals(pwd, user.pwd) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(birth, user.birth) && Objects.equals(sns, user.sns);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, pwd, name, email, birth, sns, reg_date);
-    }
-
-    @Override
+	public int hashCode() {
+		return Objects.hash(birth, email, id, name, pwd, sns);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(birth, other.birth) && Objects.equals(email, other.email) && Objects.equals(id, other.id)
+				&& Objects.equals(name, other.name) && Objects.equals(pwd, other.pwd) && Objects.equals(sns, other.sns);
+	}
+	@Override
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +

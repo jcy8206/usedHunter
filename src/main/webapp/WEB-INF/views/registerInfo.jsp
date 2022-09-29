@@ -14,7 +14,5 @@
 <h1>birth=${user.birth}</h1>
 <h1>sns=${user.sns}</h1>
 
-
-
 </body>
 </html>
