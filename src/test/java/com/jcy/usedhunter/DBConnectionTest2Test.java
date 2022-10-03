@@ -10,6 +10,7 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class DBConnectionTest2Test{
 	@Autowired
 	DataSource ds;
 	
-	
+	@Ignore
 	@Test
 	public void insertUserTest() throws Exception{
 		deleteAll();
@@ -35,7 +36,7 @@ public class DBConnectionTest2Test{
 		assertTrue(rowCnt==1);
 		
 	}
-	
+	@Ignore
 	@Test
 	public void selectUserTest() throws Exception {
 		deleteAll();
@@ -46,6 +47,7 @@ public class DBConnectionTest2Test{
 		assertTrue(user2.getId().equals("asdf"));
 	}
 	
+	@Ignore
 	@Test
 	public void deleteUserTest() throws Exception{
 		deleteAll();
@@ -59,7 +61,7 @@ public class DBConnectionTest2Test{
 		assertTrue(rowCnt2==1);
 		assertTrue(selectUser(user.getId())==null);
 	}
-	
+	@Ignore
 	@Test
 	public void updateUserTest() throws Exception{
 		deleteAll();
@@ -159,6 +161,42 @@ public class DBConnectionTest2Test{
 		return rowCnt;
 	}
 
+	@Test
+	public void transactionTest() throws Exception {
+		Connection conn=null;
+		try {
+			deleteAll();
+			conn = ds.getConnection();
+			conn.setAutoCommit(false);
+//		INSERT INTO `usedhunter`.`user_info`(`id`,`pwd`,`name`,`email`,`birth`,`sns`,`reg_date`)
+//		VALUES('asdf2','1234','smith','aaa@aaa.com','2021-01-01','facebook',now());
+			
+			String sql = "INSERT INTO `usedhunter`.`user_info` VALUES(?, ?, ?, ?, ?, ?, now())";
+			
+			PreparedStatement pstmt = conn.prepareStatement(sql); // SQL injection 방어에 유리, 성능 향상
+			pstmt.setString(1, "asdf");
+			pstmt.setString(2, "1234");
+			pstmt.setString(3, "abc");
+			pstmt.setString(4, "aaa@aaa.com");
+			pstmt.setDate(5, new java.sql.Date(new Date().getTime())); // util.Date 인 user.getBirth() 를 sql.Date 로 변환
+			pstmt.setString(6, "fb");
+			
+			
+			
+			int rowCnt = pstmt.executeUpdate(); // 영향 받은 로우행 개수 반환, insert, delete, update 에 사용
+			pstmt.setString(1, "asdf");
+			rowCnt = pstmt.executeUpdate();
+			
+			conn.commit();
+			
+		} catch (Exception e) {
+			conn.rollback();
+			e.printStackTrace();
+		} finally {
+			
+		}
+	
+	}
 	@Test
 	public void main() throws Exception{
 //		ApplicationContext ac = new GenericXmlApplicationContext("file:src/main/webapp/WEB-INF/spring/**/root-context.xml");
