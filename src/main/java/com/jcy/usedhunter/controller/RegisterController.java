@@ -1,4 +1,4 @@
-package com.jcy.usedhunter;
+package com.jcy.usedhunter.controller;
 
 
 

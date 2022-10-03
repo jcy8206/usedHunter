@@ -22,6 +22,7 @@ public class UserDaoImplTest {
 	@Autowired
 	UserDao userDao;
 	
+	@Ignore
 	@Test
 	public void deleteUser() throws Exception  {
 		Calendar cal = Calendar.getInstance();
@@ -53,7 +54,7 @@ public class UserDaoImplTest {
 		assertTrue(user2.getId().equals("asdf"));
 	}
 	
-	@Ignore
+	
 	@Test
 	public void insertUser() throws Exception{
 		Calendar cal = Calendar.getInstance();

@@ -23,6 +23,15 @@ public class BoardDaoImplTest {
 	@Autowired
 	BoardDao boardDao; 
 
+	@Test
+	public void dataTest() throws Exception{
+		boardDao.deleteAll();
+		for(int i = 1; i<=220; i++) {
+			BoardDto boardDto = new BoardDto("title"+i, "content"+i, "asdf2");
+			boardDao.insert(boardDto);
+		}
+	}
+	
 	@Ignore
 	@Test
 	public void insertTest() throws Exception{
@@ -140,7 +149,7 @@ public class BoardDaoImplTest {
 		assertTrue(boardDao.insert(boardDto)==1);
 		assertTrue(boardDao.count()==2);
 	}
-	
+	@Ignore
 	@Test
 	public void increaseViewCntTest() throws Exception{
 		boardDao.deleteAll();
