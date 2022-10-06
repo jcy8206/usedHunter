@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.jcy.usedhunter.domain.BoardDto;
 import com.jcy.usedhunter.domain.PageHandler;
+import com.jcy.usedhunter.domain.SearchCondition;
 import com.jcy.usedhunter.service.BoardService;
 
 @Controller
@@ -26,31 +27,22 @@ public class BoardController {
 	BoardService boardService;
 	
 	@GetMapping("/list")
-	public String list(Integer page, Integer pageSize, Model m, HttpServletRequest request) {
+	public String list(SearchCondition sc, Model m, HttpServletRequest request) {
 		if(!loginCheck(request)) {
 			return "redirect:/login/login?toURL="+request.getRequestURL(); // 로그인을 안했으면 로그인 화면으로 이동
 		}
 		
-		if (page==null) {
-			page=1;
-		}
-		if (pageSize==null) {
-			pageSize=10;
-		}
 		
 		try {
-			int totalCnt = boardService.getCount();
-			PageHandler ph = new PageHandler(totalCnt, page, pageSize);
+			int totalCnt = boardService.getSearchResultCnt(sc);
+			m.addAttribute("totalCnt", totalCnt);
+			PageHandler ph = new PageHandler(totalCnt, sc); 
 			
-			Map map = new HashMap();
-			map.put("offset", (page-1)*pageSize);
-			map.put("pageSize", pageSize);
 			
-			List<BoardDto> list = boardService.getPage(map);
+			List<BoardDto> list = boardService.getSearchResultPage(sc);
 			m.addAttribute("list", list);
 			m.addAttribute("ph", ph);
-			m.addAttribute("page", page);
-			m.addAttribute("pageSize", pageSize);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,6 +82,54 @@ public class BoardController {
 
 		}
 		return "redirect:/board/list"; // 모델에 담으면 "redirect:/board/list?page=&pageSize" 으로 자동으로 생성
+	}
+	
+	@GetMapping("write")
+	public String write(Model m) {
+		m.addAttribute("mode", "new");
+		return "board";
+	}
+	
+	@PostMapping("write")
+	public String write(BoardDto boardDto, Model m, HttpSession session, RedirectAttributes rttr) {
+		String writer = (String)session.getAttribute("id");
+		boardDto.setWriter(writer);
+		
+		try {
+			int rowCnt = boardService.write(boardDto);
+			
+			if(rowCnt!=1) {
+				throw new Exception("Write failed");
+			}
+			rttr.addFlashAttribute("msg", "WRT_OK");
+			return "redirect:/board/list";
+		} catch (Exception e) {
+			e.printStackTrace();
+			m.addAttribute(boardDto);
+			m.addAttribute("msg", "WRT_ERROR");
+			return "board";
+		}
+	}
+	
+	@PostMapping("modify")
+	public String modify(BoardDto boardDto, Model m, HttpSession session, RedirectAttributes rttr) {
+		String writer = (String)session.getAttribute("id");
+		boardDto.setWriter(writer);
+		
+		try {
+			int rowCnt = boardService.modify(boardDto);
+			
+			if(rowCnt!=1) {
+				throw new Exception("Modify failed");
+			}
+			rttr.addFlashAttribute("msg", "MOD_OK");
+			return "redirect:/board/list";
+		} catch (Exception e) {
+			e.printStackTrace();
+			m.addAttribute(boardDto);
+			m.addAttribute("msg", "MOD_ERROR");
+			return "board";
+		}
 	}
 
 	private boolean loginCheck(HttpServletRequest request) {

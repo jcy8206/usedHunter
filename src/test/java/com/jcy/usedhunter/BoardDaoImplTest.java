@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jcy.usedhunter.dao.BoardDao;
 import com.jcy.usedhunter.domain.BoardDto;
+import com.jcy.usedhunter.domain.SearchCondition;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,6 +24,7 @@ public class BoardDaoImplTest {
 	@Autowired
 	BoardDao boardDao; 
 
+	@Ignore
 	@Test
 	public void dataTest() throws Exception{
 		boardDao.deleteAll();
@@ -188,6 +190,7 @@ public class BoardDaoImplTest {
 		assertTrue(boardDao.deleteAll()==2);
 		assertTrue(boardDao.count()==0);
 	}
+	
 	@Ignore
 	@Test
 	public void deleteTest() throws Exception{
@@ -212,6 +215,42 @@ public class BoardDaoImplTest {
 		bno = boardDao.selectAll().get(0).getBno();
 		assertTrue(boardDao.delete(bno+1, boardDto.getWriter())==0);
 		assertTrue(boardDao.count()==1);
+	}
+	
+	@Test
+	public void searchSelectPageTest() throws Exception {
+		boardDao.deleteAll();
+		for(int i = 1; i<=20; i++) {
+			BoardDto boardDto = new BoardDto("title"+i, "aaaaa", "asdf"+i);
+			boardDao.insert(boardDto);
+		}
+		SearchCondition sc = new SearchCondition(1, 10, "title2", "T");
+		List<BoardDto> list = boardDao.searchSelectPage(sc);
+//		System.out.println("list = " + list);
+		assertTrue(list.size()==2);
+		
+		sc = new SearchCondition(1, 10, "asdf2", "W");
+		list = boardDao.searchSelectPage(sc);
+//		System.out.println("list = " + list);
+		assertTrue(list.size()==2);
+	}
+	
+	@Test
+	public void searchResultCntTest() throws Exception {
+		boardDao.deleteAll();
+		for(int i = 1; i<=20; i++) {
+			BoardDto boardDto = new BoardDto("title"+i, "bbbbbb", "asdf"+i);
+			boardDao.insert(boardDto);
+		}
+		SearchCondition sc = new SearchCondition(1, 10, "title2", "T");
+		int resultCnt = boardDao.searchResultCnt(sc);
+//		System.out.println("list = " + list);
+		assertTrue(resultCnt==2);
+		
+		sc = new SearchCondition(1, 10, "asdf2", "W");
+		resultCnt = boardDao.searchResultCnt(sc);
+//		System.out.println("list = " + list);
+		assertTrue(resultCnt==2);
 	}
 	
 	

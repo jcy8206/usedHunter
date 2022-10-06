@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.jcy.usedhunter.domain.BoardDto;
+import com.jcy.usedhunter.domain.SearchCondition;
 
 @Repository
 public class BoardDaoImpl implements BoardDao {
@@ -57,6 +58,16 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public int deleteAll() throws Exception {
 		return session.delete(namespace+"deleteAll");
+	}
+	
+	@Override
+	public List<BoardDto> searchSelectPage(SearchCondition sc) throws Exception {
+		return session.selectList(namespace+"searchSelectPage", sc);
+	}
+	
+	@Override
+	public int searchResultCnt(SearchCondition sc) throws Exception {
+		return session.selectOne(namespace+"searchResultCnt", sc);
 	}
 	
 	

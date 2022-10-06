@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jcy.usedhunter.dao.BoardDao;
 import com.jcy.usedhunter.domain.BoardDto;
+import com.jcy.usedhunter.domain.SearchCondition;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -26,6 +27,7 @@ public class BoardServiceImpl implements BoardService {
 
 	    @Override
 	    public int write(BoardDto boardDto) throws Exception {
+//	    	throw new Exception("test");
 	        return boardDao.insert(boardDto);
 	    }
 
@@ -50,5 +52,15 @@ public class BoardServiceImpl implements BoardService {
 	    @Override
 	    public int modify(BoardDto boardDto) throws Exception {
 	        return boardDao.update(boardDto);
+	    }
+	    
+	    @Override
+	    public List<BoardDto> getSearchResultPage(SearchCondition sc) throws Exception {
+	    	return boardDao.searchSelectPage(sc);
+	    }
+	    
+	    @Override
+	    public int getSearchResultCnt(SearchCondition sc) throws Exception {
+	    	return boardDao.searchResultCnt(sc);
 	    }
 }
