@@ -49,10 +49,10 @@ public class BoardDto {
 	public void setView_cnt(int view_cnt) {
 		this.view_cnt = view_cnt;
 	}
-	public int getcomment_cnt() {
+	public int getComment_cnt() {
 		return comment_cnt;
 	}
-	public void setcomment_cnt(int comment_cnt) {
+	public void setComment_cnt(int comment_cnt) {
 		this.comment_cnt = comment_cnt;
 	}
 	public Date getReg_date() {

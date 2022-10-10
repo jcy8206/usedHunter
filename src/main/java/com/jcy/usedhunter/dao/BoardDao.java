@@ -7,20 +7,30 @@ import com.jcy.usedhunter.domain.BoardDto;
 import com.jcy.usedhunter.domain.SearchCondition;
 
 public interface BoardDao {
-	BoardDto select(Integer bno) throws Exception;
-	int delete(Integer bno, String writer) throws Exception;
 	int insert(BoardDto dto) throws Exception;
-	int update(BoardDto dto) throws Exception;
-	int increaseViewCnt(Integer bno) throws Exception;
-	
-	List<BoardDto> selectPage(Map map) throws Exception;
-	List<BoardDto> selectAll() throws Exception;
-	int deleteAll() throws Exception;
-	int count() throws Exception;
-	
 
+	BoardDto select(Integer bno) throws Exception;
+	
+	List<BoardDto> selectAll() throws Exception;
+	List<BoardDto> selectPage(Map map) throws Exception;
+	
+	int update(BoardDto dto) throws Exception;
+	int count() throws Exception;
+
+	int updateCommnetCnt(Integer bno, int cnt);
+	int increaseViewCnt(Integer bno) throws Exception;
+	int delete(Integer bno, String writer) throws Exception;
+	int deleteAll() throws Exception;
+
+	
 	List<BoardDto> searchSelectPage(SearchCondition sc) throws Exception;
 	int searchResultCnt(SearchCondition sc) throws Exception;
 
-	
+
+
+
+
+
+
+
 }
