@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,18 @@ public class CommentDaoImplTest {
 	CommentDao commentDao;
 	
 	@Test
+	public void init() throws Exception {
+		for(int i = 1; i<=220; i++) {
+		CommentDto dto = new CommentDto(1066, 0, "comment"+i, "commenter"+i);
+		commentDao.insert(dto);
+		}
+		
+		
+	}
+	
+	
+	@Test
+	@Ignore
 	public void insert() throws Exception {
 		commentDao.deleteAll(1);
 		CommentDto commentDto = new CommentDto(1, 0, "comment", "asdf"); 
@@ -33,6 +46,7 @@ public class CommentDaoImplTest {
 	}
 	
 	@Test
+	@Ignore
 	public void select() throws Exception {
 		commentDao.deleteAll(1);
 		CommentDto commentDto = new CommentDto(1, 0, "comment", "asdf"); 
@@ -47,6 +61,7 @@ public class CommentDaoImplTest {
 	}
 	
 	@Test
+	@Ignore
 	public void selectAll() throws Exception {
 		commentDao.deleteAll(1);
 		CommentDto commentDto = new CommentDto(1, 0, "comment", "asdf"); 
@@ -65,6 +80,7 @@ public class CommentDaoImplTest {
 	}
 	
 	@Test
+	@Ignore
 	public void update() throws Exception {
 		commentDao.deleteAll(1);
 		CommentDto commentDto = new CommentDto(1, 0, "comment", "asdf"); 
@@ -84,12 +100,14 @@ public class CommentDaoImplTest {
 	}
 	
 	@Test
+	@Ignore
 	public void count() throws Exception {
 		commentDao.deleteAll(1);
 		assertTrue(commentDao.count(1)==0);
 	}
 	
 	@Test
+	@Ignore
 	public void delete() throws Exception {
 		commentDao.deleteAll(1);
 		CommentDto commentDto = new CommentDto(1, 0, "comment", "asdf"); 

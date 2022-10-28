@@ -1,8 +1,13 @@
 package com.jcy.usedhunter.dao;
 
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.jcy.usedhunter.domain.CommentDto;
+import com.jcy.usedhunter.domain.CommentPageHandler;
+import com.jcy.usedhunter.domain.SearchCondition;
 
 public interface CommentDao {
 
@@ -11,6 +16,8 @@ public interface CommentDao {
 	CommentDto select(Integer cno) throws Exception;
 	
 	List<CommentDto> selectAll(Integer bno) throws Exception;
+	
+	List<CommentDto> selectPage(Map map) throws Exception;
 	
 	int count(Integer bno) throws Exception;
 	

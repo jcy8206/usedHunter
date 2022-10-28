@@ -4,6 +4,9 @@
     <title>Title</title>
     <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 </head>
+<style>
+
+</style>
 <body>
     <h2>commentTest</h2>
     comment: <input type="text" name="comment"><br>
@@ -14,14 +17,16 @@
     	<input type="text" name="replyComment">
     	<button id="wrtRepBtn" type="button">등록</button>
     </div>
-    <script>
+	<script>
     
    		let bno = 1066;
+   		let page = 1;
+   		let pageSize = 10;
     
     	let showList = function(bno){
     		 $.ajax({
                  type:'GET',       // 요청 메서드
-                 url: '/comments?bno='+bno,  // 요청 URI
+                 url: '/comments?bno='+bno+'&page='+page+'&pageSize='+pageSize,  // 요청 URI
                  success : function(result){
                     $("#commentList").html(toHtml(result));    // 서버로부터 응답이 도착하면 호출될 함수
                  },
@@ -29,8 +34,11 @@
              }); // $.ajax()
     	}
     
+    
+    	
         $(document).ready(function(){
     	  	 showList(bno);
+    	  	
 
             $("#sendBtn").click(function(){
             	let comment = $("input[name=comment]").val();
@@ -140,7 +148,7 @@
         });
         
         let toHtml = function(comments) {
-    		let tmp = "<ul>";
+    		let tmp = '<ul>';
     		comments.forEach(function(comment) {
     			tmp += '<li data-cno=' + comment.cno
     			tmp += ' data-pcno=' + comment.pcno
@@ -155,8 +163,13 @@
     			tmp += '<button class="replyBtn">답글</button>'
     			tmp += '</li>'
     		})
-    		
-    		return tmp + "</ul>";
+    		   tmp += "</ul>"
+    			   tmp += '<div class="paging">'
+    		  tmp += '<c:forEach var="i" begin="${cp.beginPage}" end="${cp.endPage}">'
+					tmp += '<a>${i}</a>'
+						tmp += '</c:forEach>'
+    		 return tmp += '</div>';
+
     	}
     </script>
 </body>

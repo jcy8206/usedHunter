@@ -27,6 +27,11 @@ public class SearchCondition {
 	public SearchCondition() {
 		
 	}
+	
+	public SearchCondition(Integer page, Integer pageSize) {
+		this.page = page;
+		this.pageSize = pageSize;
+	}
 	public SearchCondition(Integer page, Integer pageSize, String keyword, String option) {
 		this.page = page;
 		this.pageSize = pageSize;

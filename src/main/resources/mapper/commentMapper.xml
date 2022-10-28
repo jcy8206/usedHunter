@@ -29,6 +29,15 @@
 		ORDER BY pcno asc, cno asc;
 	</select>
 	
+	
+	<select id="selectPage" parameterType="map" resultType="CommentDto">
+		SELECT cno, bno, ifnull(pcno, cno) as pcno, comment, commenter, reg_date, up_date 
+		FROM comment 
+		WHERE bno = #{bno} 
+		ORDER BY pcno asc, cno asc
+		LIMIT #{offset}, #{pageSize}
+	</select>
+	
 	<select id="count" resultType="int">
 		SELECT count(*) FROM comment
 		WHERE bno = #{bno}

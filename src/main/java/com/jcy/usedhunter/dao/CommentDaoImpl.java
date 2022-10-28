@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.jcy.usedhunter.domain.CommentDto;
+import com.jcy.usedhunter.domain.CommentPageHandler;
+import com.jcy.usedhunter.domain.SearchCondition;
 
 @Repository
 public class CommentDaoImpl implements CommentDao{
@@ -30,10 +33,18 @@ public class CommentDaoImpl implements CommentDao{
 	public List<CommentDto> selectAll(Integer bno) throws Exception {
 		return session.selectList(namespace + "selectAll", bno);
 	}
+	
+	@Override
+	public List<CommentDto> selectPage(Map map) throws Exception {
+		return session.selectList(namespace + "selectPage", map);
+	}
+	
+	
 	@Override
 	public int count(Integer bno) throws Exception {
 		return session.selectOne(namespace + "count", bno);
 	}
+	
 	@Override
 	public int update(CommentDto commentDto) throws Exception {
 		return session.update(namespace + "update", commentDto);

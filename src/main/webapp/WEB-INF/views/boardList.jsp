@@ -272,6 +272,8 @@ td.title:hover {
 			</div>
 		</div>
 	</div>
+
+    
 	<script>
 	let msg = "${msg}"
     if(msg=="WRT_OK") alert("성공적으로 등록되었습니다.");

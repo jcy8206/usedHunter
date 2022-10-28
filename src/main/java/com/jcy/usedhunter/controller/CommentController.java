@@ -1,12 +1,16 @@
 package com.jcy.usedhunter.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jcy.usedhunter.domain.CommentDto;
+import com.jcy.usedhunter.domain.CommentPageHandler;
+import com.jcy.usedhunter.domain.SearchCondition;
 import com.jcy.usedhunter.service.CommentService;
 
 //@Controller
@@ -35,8 +41,8 @@ public class CommentController {
 	public ResponseEntity<String> modify(@PathVariable Integer cno, @RequestBody CommentDto commentDto, HttpSession session){
 	
 //		String commenter = (String)session.getAttribute("id");
-		String commneter = "asdf2";
-		commentDto.setCommenter(commneter);
+		String commenter = "asdf2";
+		commentDto.setCommenter(commenter);
 		commentDto.setCno(cno);
 		System.out.println("dto = " + commentDto);
 		
@@ -62,8 +68,8 @@ public class CommentController {
 	public ResponseEntity<String> write(@RequestBody CommentDto commentDto, Integer bno, HttpSession session){
 	
 //		String commenter = (String)session.getAttribute("id");
-		String commneter = "asdf2";
-		commentDto.setCommenter(commneter);
+		String commenter = "asdf2";
+		commentDto.setCommenter(commenter);
 		commentDto.setBno(bno);
 		System.out.println("dto = " + commentDto);
 		
@@ -82,10 +88,10 @@ public class CommentController {
 //	@ResponseBody
 	public ResponseEntity<String> remove(@PathVariable Integer cno, Integer bno, HttpSession session){
 //		String commenter = (String)session.getAttribute("id");
-		String commneter = "asdf2";
+		String commenter = "asdf2";
 		
 		try {
-			int rowCnt = service.remove(cno, bno, commneter);
+			int rowCnt = service.remove(cno, bno, commenter);
 			
 			if (rowCnt!=1) {
 				throw new Exception("Delete Failed");
@@ -98,16 +104,51 @@ public class CommentController {
 		
 	}
 	
-	@GetMapping("comments")
+	
+	
+	@GetMapping("/comments")
 //	@ResponseBody
 	public ResponseEntity<List<CommentDto>> list(Integer bno){
+
+    	
+		
 		List<CommentDto> list = null;
 		try {
 			list = service.getList(bno);
+		
 			return new ResponseEntity<List<CommentDto>>(list, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<List<CommentDto>>(HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+
+	@GetMapping(value="/comments/{bno}/{page}/{pageSize}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}) // /comments?bno=1066&page=2&pageSize=10
+//	@ResponseBody
+	public ResponseEntity<Map<String, Object>> getList(@PathVariable Integer page, @PathVariable Integer pageSize, @PathVariable Integer bno){
+
+		
+		 
+		try {
+			int totalCnt = service.getCount(bno);
+			CommentPageHandler pageHandler = new CommentPageHandler(totalCnt, page, pageSize);
+			
+			Map map = new HashMap();
+			map.put("offset", (page-1)*pageSize);
+			map.put("pageSize", pageSize);
+			map.put("bno", bno);
+			List<CommentDto> list = service.getPage(map);
+			
+			Map map2 = new HashMap();
+			map2.put("ph", pageHandler);
+			map2.put("list", list);
+			
+			return new ResponseEntity<Map<String, Object>>(map2, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 }
