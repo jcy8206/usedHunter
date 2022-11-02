@@ -40,8 +40,9 @@ public class CommentController {
 //	@ResponseBody
 	public ResponseEntity<String> modify(@PathVariable Integer cno, @RequestBody CommentDto commentDto, HttpSession session){
 	
-//		String commenter = (String)session.getAttribute("id");
-		String commenter = "asdf2";
+		String commenter = (String)session.getAttribute("id");
+//		String commenter = "asdf2";
+		
 		commentDto.setCommenter(commenter);
 		commentDto.setCno(cno);
 		System.out.println("dto = " + commentDto);
@@ -67,8 +68,9 @@ public class CommentController {
 //	@ResponseBody
 	public ResponseEntity<String> write(@RequestBody CommentDto commentDto, Integer bno, HttpSession session){
 	
-//		String commenter = (String)session.getAttribute("id");
-		String commenter = "asdf2";
+		String commenter = (String)session.getAttribute("id");
+//		String commenter = "asdf2";
+		
 		commentDto.setCommenter(commenter);
 		commentDto.setBno(bno);
 		System.out.println("dto = " + commentDto);
@@ -87,8 +89,8 @@ public class CommentController {
 	@DeleteMapping("/comments/{cno}") // /comments/1?bno=1080
 //	@ResponseBody
 	public ResponseEntity<String> remove(@PathVariable Integer cno, Integer bno, HttpSession session){
-//		String commenter = (String)session.getAttribute("id");
-		String commenter = "asdf2";
+		String commenter = (String)session.getAttribute("id");
+//		String commenter = "asdf2";
 		
 		try {
 			int rowCnt = service.remove(cno, bno, commenter);
@@ -106,42 +108,42 @@ public class CommentController {
 	
 	
 	
-	@GetMapping("/comments")
-//	@ResponseBody
-	public ResponseEntity<List<CommentDto>> list(Integer bno){
-
-    	
-		
-		List<CommentDto> list = null;
-		try {
-			list = service.getList(bno);
-		
-			return new ResponseEntity<List<CommentDto>>(list, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<List<CommentDto>>(HttpStatus.BAD_REQUEST);
-		}
-	}
+//	@GetMapping("/comments")
+////	@ResponseBody
+//	public ResponseEntity<List<CommentDto>> list(Integer bno){
+//
+//    	
+//		
+//		List<CommentDto> list = null;
+//		try {
+//			list = service.getList(bno);
+//		
+//			return new ResponseEntity<List<CommentDto>>(list, HttpStatus.OK);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return new ResponseEntity<List<CommentDto>>(HttpStatus.BAD_REQUEST);
+//		}
+//	}
 	
 
-	@GetMapping(value="/comments/{bno}/{page}/{pageSize}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}) // /comments?bno=1066&page=2&pageSize=10
+	@GetMapping(value="/comments", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE}) // /comments?bno=1066&page=2&pageSize=10
 //	@ResponseBody
-	public ResponseEntity<Map<String, Object>> getList(@PathVariable Integer page, @PathVariable Integer pageSize, @PathVariable Integer bno){
+	public ResponseEntity<Map<String, Object>> getList(Integer page, Integer pageSize, Integer bno){
 
 		
 		 
 		try {
 			int totalCnt = service.getCount(bno);
-			CommentPageHandler pageHandler = new CommentPageHandler(totalCnt, page, pageSize);
+			CommentPageHandler ph = new CommentPageHandler(totalCnt, page, pageSize);
 			
 			Map map = new HashMap();
-			map.put("offset", (page-1)*pageSize);
-			map.put("pageSize", pageSize);
+			map.put("offset", ph.getOffset());
+			map.put("pageSize", ph.getPageSize());
 			map.put("bno", bno);
 			List<CommentDto> list = service.getPage(map);
 			
 			Map map2 = new HashMap();
-			map2.put("ph", pageHandler);
+			map2.put("ph", ph);
 			map2.put("list", list);
 			
 			return new ResponseEntity<Map<String, Object>>(map2, HttpStatus.OK);

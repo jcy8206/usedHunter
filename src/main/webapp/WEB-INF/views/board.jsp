@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="true"%>
 <c:set var="loginId" value="${sessionScope.id}" />
-<c:set var="loginOutLink"
+<c:set var="loginOutLink" 
 	value="${loginId=='' ? '/login/login' : '/login/logout'}" />
 <c:set var="loginOut" value="${loginId=='' ? 'Login' : 'ID='+=loginId}" />
 
@@ -382,28 +382,30 @@ textarea {
             </div>
         </div>
         <div id="comment-writebox">
-            <div class="commenter commenter-writebox">${id}</div>
+            <div class="commenter commenter-writebox">${loginId}</div>
             <div class="comment-writebox-content">
                 <textarea name="comment" id="re-textarea" cols="30" rows="3" placeholder="댓글을 남겨보세요"></textarea>
             </div>
             <div id="comment-writebox-bottom">
                 <div class="register-box">
-                    <a href="#" class="btn" id="btn-write-comment">등록</a>
+                    <button type="button" class="btn" id="btn-write-comment">등록</button>
                 </div>
             </div>
         </div>
     </div>
     <div id="reply-writebox">
-        <div class="commenter commenter-writebox">${id}</div>
+        <div class="commenter commenter-writebox">${loginId}</div>
+        <form action="" id="form">
         <div class="reply-writebox-content">
             <textarea name="re-comment" id="rere-textarea" cols="30" rows="3" placeholder="댓글을 남겨보세요"></textarea>
         </div>
         <div id="reply-writebox-bottom">
             <div class="register-box">
-                <a href="#" class="btn" id="btn-write-reply">등록</a>
-                <a href="#" class="btn" id="btn-cancel-reply">취소</a> 
+                <button type="button" class="btn" id="btn-write-reply">등록</button>
+                <button type="button" class="btn" id="btn-cancel-reply">취소</button> 
             </div>
         </div>
+        </form>
     </div>
     <div id="modalWin" class="modal">
         <!-- Modal content -->
@@ -418,30 +420,31 @@ textarea {
                 </div>
                 <div id="modify-writebox-bottom">
                     <div class="register-box">
-                        <a href="#" class="btn" id="btn-write-modify">등록</a>
+                        <button type="button" class="btn" id="btn-write-modify">등록</button>
                     </div>
                 </div>
             </div>
-            </p>
         </div>
     </div>
 <script> // 댓글
-        let id = 'asdf2';
+        
         let bno = ${boardDto.bno};
-        let page = 11;
+        let page = 1;
         let pageSize=10;
+        
+        
 
-        let showList = function(bno){
+        let showList = function(page){
    		 $.ajax({
                 type:'GET',       // 요청 메서드
-                url: '/comments/'+bno+'/'+page+'/'+pageSize,  // 요청 URI  
-                success : function(result){
-                   $("#commentList").html(toHtmlComment(result.list));
-                   $(".paging").html(toHtmlPaging(result.ph));// 서버로부터 응답이 도착하면 호출될 함수
+                url: '/comments?bno='+bno+'&page='+page+'&pageSize='+pageSize,  // 요청 URI  
+                success : function(result){ // 서버로부터 응답이 도착하면 호출될 함수
+                   $("#commentList").html(toHtmlComment(result.list)); // 댓글 리스트
+                   $(".paging").html(toHtmlPaging(result.ph)); // 댓글 페이징
                 },
                 error   : function(){ alert("error") } // 에러가 발생했을 때, 호출될 함수
             }); // $.ajax()
-   	}
+   		}
         
        
         
@@ -465,16 +468,16 @@ textarea {
         }
 
         $(document).ready(function(){
-        	showList(bno);
+        	showList(page);
         	
-        	$(".paging").on("click", "a", function(e){ // 답글쓰기.등록
+        	$(".paging").on("click", "a", function(e){ // 댓글 페이징
         		e.preventDefault();
-            	var target = e.target;
-            	var page = target.getAttribute("href");
+        		let target = e.target;
+        		let page = target.getAttribute("href");
             	
             	$.ajax({
                     type:'GET',       // 요청 메서드
-                    url: '/comments/'+bno+'/'+page+'/'+pageSize,  // 요청 URI  
+                    url: '/comments?bno='+bno+'&page='+page+'&pageSize='+pageSize,  // 요청 URI  
                     success : function(result){
                        $("#commentList").html(toHtmlComment(result.list));
                        $(".paging").html(toHtmlPaging(result.ph));// 서버로부터 응답이 도착하면 호출될 함수
@@ -484,7 +487,9 @@ textarea {
             })
         	
         	$("#btn-write-comment").click(function(){ // 새 댓글 등록
-            	let comment = $("textarea[name=comment]").val();
+            	/* let comment = $("textarea[name=comment]").val(); */
+            	let comment = $("#comment-writebox textarea").val();
+            	let page = $(".totalPage").attr("id");
             	
             	if(comment.trim()==''){
             		alert("댓글을 입력해주세요.");
@@ -498,7 +503,7 @@ textarea {
                      data : JSON.stringify({bno:bno, comment:comment}),  // 서버로 전송할 데이터. stringify()로 직렬화 필요.
                      success : function(result){
                     	 alert(result);
-                	  	 showList(bno);
+                	  	 showList(page);
                 	  	$("textarea[name=comment]").val("");
                      },
                      error   : function(){ alert("error") } // 에러가 발생했을 때, 호출될 함수
@@ -520,10 +525,11 @@ textarea {
                 
             });
         	
-        	$("#commentList").on("click", "#btn-write-reply", function(){ // 답글쓰기.등록
+        	$(document).on("click", "#btn-write-reply", function(){ // 답글쓰기.등록
             	let comment = $("textarea[name=re-comment]").val();
             	let pcno = $("#reply-writebox").parent().attr("data-pcno");
             	let repForm = $("#reply-writebox");
+            	let page = $(".paging-active").attr("href");
             	
             	if(comment.trim()==''){
             		alert("댓글을 입력해주세요.");
@@ -536,36 +542,39 @@ textarea {
                      headers : { "content-type": "application/json"}, // 요청 헤더
                      data : JSON.stringify({pcno:pcno, bno:bno, comment:comment}),  // 서버로 전송할 데이터. stringify()로 직렬화 필요.
                      success : function(result){
+                    	 repForm.appendTo($("#comment"));
                     	 alert(result);
-                    	 repForm.appendTo($("li[data-pcno="+pcno+"]"));
-                	  	 showList(bno);
+                	  	 showList(page);
+                	  	 
                      },
                      error   : function(){ alert("error") } // 에러가 발생했을 때, 호출될 함수
                  }); // $.ajax()
+                 
             })
             
             $("#btn-cancel-reply").click(function(e){ // 답글쓰기.취소
                 $("#reply-writebox").css("display", "none");
             });
         	
-        	$("#commentList").on("click", "a.btn-delete", function(e){ // 삭제
+        	$("#commentList").on("click", "a.btn-delete", function(e){ // 댓글 삭제
         		if (!confirm("정말로 삭제하시겠습니까?")) return;
         		let target = e.target;
                 let cno = target.getAttribute("data-cno")
                 let bno = target.getAttribute("data-bno")
+                let page = $(".paging-active").attr("href");
             	
             	 $.ajax({
                      type:'DELETE',       // 요청 메서드
-                     url: '/comments/'+cno+'?bno='+bno,  // 요청 URI /comments?bno=1081
+                     url: '/comments/'+cno+'?bno='+bno,  // 요청 URI /comments/{cno}?bno=1081
                      success : function(result){
                     	 alert(result);
-                	  	 showList(bno);
+                	  	 showList(page);
                      },
                      error   : function(){ alert("error") } // 에러가 발생했을 때, 호출될 함수
                  }); // $.ajax()
             })
 
-            $("#commentList").on("click", "a.btn-modify", function(e){ // 수정
+            $(document).on("click", "a.btn-modify", function(e){ // 댓글 수정
                 let target = e.target;
                 let cno = target.getAttribute("data-cno");
                 let bno = target.getAttribute("data-bno");
@@ -575,7 +584,8 @@ textarea {
                 let comment = $(".comment-content", li).first().text();
 
                 $("#modalWin .commenter").text(commenter);
-                $("#modalWin textarea").text(comment);
+                /* $("textarea[name=mod-comment]").val(comment); */
+                $(".modify-writebox-content textarea").val(comment);
                 $("#btn-write-modify").attr("data-cno", cno);
                 $("#btn-write-modify").attr("data-pcno", pcno);
                 $("#btn-write-modify").attr("data-bno", bno);
@@ -584,11 +594,14 @@ textarea {
                 $("#modalWin").css("display","block");
             });
 
-
-            $("#btn-write-modify").click(function(){ // 수정.등록
+        	
+        		$(document).on("click", "#btn-write-modify", function(e){ // 수정.등록
                 // 1. 변경된 내용을 서버로 전송
-            	let cno = $(this).attr("data-cno");
+                let target = e.target;
+                let cno = target.getAttribute("data-cno");
             	let comment = $("textarea[name=mod-comment]").val();
+            	let page = $(".paging-active").attr("href");
+            	let modForm = $("#modalWin");
 
             	if(comment.trim()==''){
             		alert("댓글을 입력해주세요.");
@@ -601,14 +614,14 @@ textarea {
                      headers : { "content-type": "application/json"}, // 요청 헤더
                      data : JSON.stringify({cno:cno, comment:comment}),  // 서버로 전송할 데이터. stringify()로 직렬화 필요.
                      success : function(result){
+                    	 modForm.appendTo($("#comment"));
                     	 alert(result);
-                	  	 showList(bno);
-                	  	
+                	  	 showList(page);
                      },
                      error   : function(){ alert("error") } // 에러가 발생했을 때, 호출될 함수
                  }); // $.ajax()
                 // 2. 모달 창을 닫는다. 
-                $(".close").trigger("click");
+                 $(".close").trigger("click"); 
             });
 
             $(".close").click(function(){
@@ -661,18 +674,14 @@ textarea {
         	if(ph.showPrev){
         		tmp += "<a class=page href="+(ph.beginPage-1)+">&lt;</a>";
         	}
-        	for (var i=ph.beginPage, len=ph.endPage; i<=len; i++){
-        		var tmpClass = ph.page == i? 'paging-active' : 'page';
+        	for (let i=ph.beginPage, len=ph.endPage; i<=len; i++){
+        		let tmpClass = ph.page == i? 'paging-active' : 'page';
         		tmp += "<a class=" +tmpClass+ " href="+i+">"+i+"</a>";
         	}
         	if(ph.showNext){
         		tmp += "<a class=page href="+(ph.endPage+1)+">&gt;</a>";
         	}    
-         return tmp;
-        	
-        		
-        	
-        
+         return tmp += "<a class=totalPage id="+ph.totalPage+"></a>";
         }
         
        

@@ -3,7 +3,7 @@ package com.jcy.usedhunter.domain;
 public class CommentPageHandler {
 
 	private int totalCnt;
-	private int pageSize;
+	private int pageSize = 10;
 	private int naviSize = 10;
 	private int totalPage;
 	private int page;
@@ -92,6 +92,9 @@ public class CommentPageHandler {
 	}
 	public void setShowNext(boolean showNext) {
 		this.showNext = showNext;
+	}
+	public Integer getOffset() {
+		return (page-1)*pageSize;
 	}
 	
 	@Override
