@@ -33,7 +33,7 @@
             border : 1px solid rgb(89,117,196);
             border-radius:5px;
             padding: 0 10px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         
         label {
@@ -59,9 +59,9 @@
         }
 
         .msg {
-            height: 30px;
+            height: 20px;
             text-align:center;
-            font-size:16px;
+            font-size:14px;
             color:red;
             margin-bottom: 20px;
         }
@@ -76,17 +76,29 @@
    <!-- form action="<c:url value="/register/save"/>" method="POST" onsubmit="return formCheck(this)"-->
    <form:form modelAttribute="user">
     <div class="title">Register</div>
-    <div id="msg" class="msg"><form:errors path="id"/></div>  
     <label for="">아이디</label>
-    <input class="input-field" type="text" name="id" placeholder="8~12자리의 영대소문자와 숫자 조합">
+    <input class="input-field" type="text" name="id" placeholder="5~12자리의 영대소문자와 숫자 조합" autofocus>
+    <div id="msgId" class="msg">
+    <form:errors path="id"/>
+    </div> 
     <label for="">비밀번호</label>
-    <input class="input-field" type="text" name="pwd" placeholder="8~12자리의 영대소문자와 숫자 조합">
+    <input class="input-field" type="text" name="pwd" placeholder="5~12자리의 영대소문자와 숫자 조합">
+    <div id="msgPwd" class="msg">
+    <form:errors path="pwd"/>
+    </div> 
     <label for="">이름</label>
     <input class="input-field" type="text" name="name" placeholder="홍길동">
+    <div id="msgName" class="msg">
+    <form:errors path="name"/>
+    </div> 
     <label for="">이메일</label>
-    <input class="input-field" type="text" name="email" placeholder="example@aaa.co.kr"> 
+    <input class="input-field" type="text" name="email" placeholder="example@aaa.co.kr">
+    <div id="msgEmail" class="msg">
+    <form:errors path="email"/>
+    </div>  
     <label for="">생일</label>
     <input class="input-field" type="text" name="birth" placeholder="2020-12-31">
+   
     <div class="sns-chk">
         <label><input type="checkbox" name="sns" value="facebook"/>페이스북</label>
         <label><input type="checkbox" name="sns" value="kakaotalk"/>카카오톡</label>
